@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WhatsApp Widget — Embed Demo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f9fafb;
+      color: #111;
+      min-height: 100vh;
+      padding: 60px 24px;
+    }
+    .container { max-width: 720px; margin: 0 auto; }
+    h1 { font-size: 36px; font-weight: 700; margin-bottom: 12px; }
+    .lead { font-size: 18px; color: #6b7280; margin-bottom: 48px; line-height: 1.6; }
+
+    .section { margin-bottom: 48px; }
+    .section h2 { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+    .section p { font-size: 15px; color: #6b7280; margin-bottom: 16px; line-height: 1.6; }
+
+    pre {
+      background: #1a1a2e;
+      border-radius: 12px;
+      padding: 24px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.8;
+      color: #e2e8f0;
+    }
+    .hl-tag { color: #f472b6; }
+    .hl-attr { color: #67e8f9; }
+    .hl-str { color: #86efac; }
+    .hl-comment { color: #6b7280; }
+
+    .badge {
+      display: inline-block;
+      background: #25D366;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    th, td { text-align: left; padding: 10px 12px; font-size: 14px; border-bottom: 1px solid #e5e7eb; }
+    th { font-weight: 600; color: #374151; background: #f3f4f6; }
+    td code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+    td:last-child { color: #6b7280; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>WhatsApp Widget</h1>
+    <p class="lead">Add a branded WhatsApp chat widget to any website with a single script tag. No build step, no dependencies.</p>
+
+    <div class="section">
+      <span class="badge">Minimal</span>
+      <h2>Basic embed (WhatsApp only)</h2>
+      <p>Just a phone number and brand name. That's all you need.</p>
+      <pre><span class="hl-tag">&lt;script</span>
+  <span class="hl-attr">src</span>=<span class="hl-str">"widget.js"</span>
+  <span class="hl-attr">data-phone</span>=<span class="hl-str">"27787869161"</span>
+  <span class="hl-attr">data-brand</span>=<span class="hl-str">"Acme Co"</span>
+<span class="hl-tag">&gt;&lt;/script&gt;</span></pre>
+    </div>
+
+    <div class="section">
+      <span class="badge">Full</span>
+      <h2>Full embed (logo + demo link + custom colors)</h2>
+      <p>All options in one embed. Logo, custom color, booking link, custom messages.</p>
+      <pre><span class="hl-tag">&lt;script</span>
+  <span class="hl-attr">src</span>=<span class="hl-str">"widget.js"</span>
+  <span class="hl-attr">data-phone</span>=<span class="hl-str">"27787869161"</span>
+  <span class="hl-attr">data-brand</span>=<span class="hl-str">"ReachMax"</span>
+  <span class="hl-attr">data-logo</span>=<span class="hl-str">"https://example.com/logo.png"</span>
+  <span class="hl-attr">data-color</span>=<span class="hl-str">"#25D366"</span>
+  <span class="hl-attr">data-welcome</span>=<span class="hl-str">"How can we help you today?"</span>
+  <span class="hl-attr">data-demo-url</span>=<span class="hl-str">"https://cal.com/your-link"</span>
+  <span class="hl-attr">data-demo-label</span>=<span class="hl-str">"Book a Free Demo"</span>
+  <span class="hl-attr">data-message</span>=<span class="hl-str">"Hi! I'd like to know more."</span>
+<span class="hl-tag">&gt;&lt;/script&gt;</span></pre>
+    </div>
+
+    <div class="section">
+      <h2>All data attributes</h2>
+      <table>
+        <thead>
+          <tr><th>Attribute</th><th>Default</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>data-phone</code></td><td>-</td><td>WhatsApp number (with country code, no +)</td></tr>
+          <tr><td><code>data-brand</code></td><td>Our Team</td><td>Brand name shown in header</td></tr>
+          <tr><td><code>data-logo</code></td><td>-</td><td>URL to logo image</td></tr>
+          <tr><td><code>data-color</code></td><td>#25D366</td><td>Primary/accent color (hex)</td></tr>
+          <tr><td><code>data-welcome</code></td><td>How can we help you today?</td><td>Subtitle text below header</td></tr>
+          <tr><td><code>data-wa-label</code></td><td>Chat on WhatsApp</td><td>WhatsApp button label</td></tr>
+          <tr><td><code>data-wa-subtitle</code></td><td>We typically reply within minutes</td><td>WhatsApp button subtitle</td></tr>
+          <tr><td><code>data-message</code></td><td>Hi! I'd like to know more.</td><td>Pre-filled WhatsApp message</td></tr>
+          <tr><td><code>data-demo-url</code></td><td>-</td><td>Booking/demo link (shows card if set)</td></tr>
+          <tr><td><code>data-demo-label</code></td><td>Book a Free Demo</td><td>Demo button label</td></tr>
+          <tr><td><code>data-demo-subtitle</code></td><td>15-minute personalized walkthrough</td><td>Demo button subtitle</td></tr>
+          <tr><td><code>data-position</code></td><td>right</td><td><code>right</code> or <code>left</code></td></tr>
+          <tr><td><code>data-brand-url</code></td><td>https://www.reachmax.app</td><td>"Powered by" link</td></tr>
+          <tr><td><code>data-powered-by</code></td><td>ReachMax</td><td>"Powered by" text</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- The actual widget embed (this is what clients copy) -->
+  <script
+    src="widget.js"
+    data-phone="27787869161"
+    data-brand="ReachMax"
+    data-color="#25D366"
+    data-welcome="How can we help you today?"
+    data-demo-url="https://cal.com/reachmax/demo"
+    data-demo-label="Book a Free Demo"
+    data-demo-subtitle="15-minute personalized walkthrough"
+    data-message="Hi! I'd like to know more about ReachMax."
+  ></script>
+</body>
+</html>

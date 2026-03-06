@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WhatsApp Widget — Embed Code Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f9fafb;
+      color: #111827;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header h1 {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .header .badge {
+      font-size: 12px;
+      font-weight: 600;
+      background: #25D366;
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      max-width: 1200px;
+      margin: 32px auto;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      background: #fff;
+    }
+
+    /* ── Form Panel ──────────────────────────────── */
+    .form-panel {
+      padding: 32px;
+      border-right: 1px solid #e5e7eb;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+
+    .form-panel h2 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #374151;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+
+    .form-group .hint {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-bottom: 6px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="url"],
+    .form-group input[type="tel"] {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #111827;
+      background: #f9fafb;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    .form-group input:focus {
+      border-color: #25D366;
+      box-shadow: 0 0 0 3px rgba(37,211,102,0.1);
+    }
+
+    .form-group input::placeholder { color: #9ca3af; }
+
+    .color-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .color-row input[type="color"] {
+      width: 44px;
+      height: 44px;
+      border: 2px solid #d1d5db;
+      border-radius: 10px;
+      cursor: pointer;
+      padding: 2px;
+      background: #fff;
+    }
+
+    .color-row input[type="text"] {
+      flex: 1;
+    }
+
+    .section-divider {
+      border: none;
+      border-top: 1px solid #e5e7eb;
+      margin: 24px 0;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #9ca3af;
+      margin-bottom: 16px;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .toggle-row label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 0;
+    }
+
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle .slider {
+      position: absolute;
+      inset: 0;
+      background: #d1d5db;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .toggle .slider::after {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: transform 0.2s;
+    }
+
+    .toggle input:checked + .slider {
+      background: #25D366;
+    }
+
+    .toggle input:checked + .slider::after {
+      transform: translateX(20px);
+    }
+
+    .demo-fields {
+      display: none;
+    }
+
+    .demo-fields.active {
+      display: block;
+    }
+
+    /* ── Output Panel ────────────────────────────── */
+    .output-panel {
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+
+    .output-panel h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .code-output {
+      position: relative;
+      background: #1a1a2e;
+      border-radius: 12px;
+      padding: 20px;
+      overflow-x: auto;
+    }
+
+    .code-output pre {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #e2e8f0;
+      white-space: pre;
+      margin: 0;
+    }
+
+    .code-output .hl-tag { color: #f472b6; }
+    .code-output .hl-attr { color: #67e8f9; }
+    .code-output .hl-str { color: #86efac; }
+
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255,255,255,0.1);
+      color: #e2e8f0;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .copy-btn:hover { background: rgba(255,255,255,0.2); }
+
+    .copy-btn.copied {
+      background: #25D366;
+      color: #fff;
+    }
+
+    /* ── Preview ──────────────────────────────────── */
+    .preview-section h2 {
+      margin-bottom: 12px;
+    }
+
+    .preview-frame {
+      background: #f3f4f6;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      min-height: 400px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .preview-frame .preview-site {
+      padding: 40px 24px;
+      text-align: center;
+      color: #9ca3af;
+      font-size: 14px;
+    }
+
+    .preview-frame .preview-site h3 {
+      color: #d1d5db;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    /* ── Responsive ───────────────────────────────── */
+    @media (max-width: 800px) {
+      .layout {
+        grid-template-columns: 1fr;
+        margin: 16px;
+      }
+
+      .form-panel {
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+        max-height: none;
+      }
+
+      .output-panel { max-height: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>WhatsApp Widget Generator</h1>
+    <span class="badge">Embed Code</span>
+  </div>
+
+  <div class="layout">
+    <!-- ── Form ──────────────────────────────────── -->
+    <div class="form-panel">
+      <h2>Client Settings</h2>
+
+      <div class="form-group">
+        <label>WhatsApp Number *</label>
+        <div class="hint">With country code, no + or spaces (e.g. 27831234567)</div>
+        <input type="tel" id="f-phone" placeholder="27831234567" />
+      </div>
+
+      <div class="form-group">
+        <label>Brand Name *</label>
+        <input type="text" id="f-brand" placeholder="Acme Plumbing" />
+      </div>
+
+      <div class="form-group">
+        <label>Logo URL</label>
+        <div class="hint">Square image works best (PNG or SVG)</div>
+        <input type="url" id="f-logo" placeholder="https://example.com/logo.png" />
+      </div>
+
+      <div class="form-group">
+        <label>Brand Color</label>
+        <div class="color-row">
+          <input type="color" id="f-color-picker" value="#25D366" />
+          <input type="text" id="f-color" value="#25D366" placeholder="#25D366" />
+        </div>
+      </div>
+
+      <hr class="section-divider" />
+      <div class="section-label">Messages</div>
+
+      <div class="form-group">
+        <label>Welcome Text</label>
+        <input type="text" id="f-welcome" placeholder="How can we help you today?" />
+      </div>
+
+      <div class="form-group">
+        <label>WhatsApp Button Label</label>
+        <input type="text" id="f-wa-label" placeholder="Chat on WhatsApp" />
+      </div>
+
+      <div class="form-group">
+        <label>WhatsApp Button Subtitle</label>
+        <input type="text" id="f-wa-subtitle" placeholder="We typically reply within minutes" />
+      </div>
+
+      <div class="form-group">
+        <label>Pre-filled Message</label>
+        <div class="hint">Message that appears in WhatsApp when they tap send</div>
+        <input type="text" id="f-message" placeholder="Hi! I'd like to know more." />
+      </div>
+
+      <hr class="section-divider" />
+      <div class="section-label">Demo / Booking Link</div>
+
+      <div class="toggle-row">
+        <label>Show booking button</label>
+        <label class="toggle">
+          <input type="checkbox" id="f-demo-toggle" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="demo-fields" id="demo-fields">
+        <div class="form-group">
+          <label>Booking URL</label>
+          <input type="url" id="f-demo-url" placeholder="https://cal.com/your-link" />
+        </div>
+
+        <div class="form-group">
+          <label>Button Label</label>
+          <input type="text" id="f-demo-label" placeholder="Book a Free Demo" />
+        </div>
+
+        <div class="form-group">
+          <label>Button Subtitle</label>
+          <input type="text" id="f-demo-subtitle" placeholder="15-minute personalized walkthrough" />
+        </div>
+      </div>
+
+      <hr class="section-divider" />
+      <div class="section-label">Position</div>
+
+      <div class="form-group">
+        <label>Widget Position</label>
+        <div class="color-row">
+          <button id="pos-right" class="pos-btn active" onclick="setPosition('right')">Right</button>
+          <button id="pos-left" class="pos-btn" onclick="setPosition('left')">Left</button>
+        </div>
+      </div>
+
+      <style>
+        .pos-btn {
+          flex: 1;
+          padding: 10px;
+          border: 1px solid #d1d5db;
+          border-radius: 10px;
+          font-size: 13px;
+          font-weight: 600;
+          font-family: inherit;
+          background: #f9fafb;
+          color: #374151;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .pos-btn.active {
+          background: #111827;
+          color: #fff;
+          border-color: #111827;
+        }
+      </style>
+    </div>
+
+    <!-- ── Output ────────────────────────────────── -->
+    <div class="output-panel">
+      <div>
+        <h2>Embed Code</h2>
+        <div class="code-output">
+          <button class="copy-btn" onclick="copyCode()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span id="copy-label">Copy</span>
+          </button>
+          <pre id="code-output"></pre>
+        </div>
+      </div>
+
+      <!-- Install Link -->
+      <div>
+        <h2>Client Install Page</h2>
+        <p style="font-size:14px;color:#6b7280;margin:4px 0 12px;">Share this link with the client — includes their embed code, copy button, and platform-specific instructions.</p>
+        <div class="code-output" style="padding:14px 18px;">
+          <button class="copy-btn" onclick="copyLink()" style="top:8px;right:8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span id="link-copy-label">Copy link</span>
+          </button>
+          <pre id="install-link" style="font-size:12px;line-height:1.5;word-break:break-all;white-space:pre-wrap;"></pre>
+        </div>
+        <a id="install-link-open" href="#" target="_blank" style="display:inline-block;margin-top:10px;font-size:13px;font-weight:600;color:#25D366;text-decoration:none;">Open install page &rarr;</a>
+      </div>
+
+      <div class="preview-section">
+        <h2>Live Preview</h2>
+        <div class="preview-frame" id="preview-frame">
+          <div class="preview-site">
+            <h3>Client Website</h3>
+            <p>The widget will appear in the corner below</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const WIDGET_URL = "https://widget.reachmax.app/widget.js";
+
+    const defaults = {
+      welcome: "How can we help you today?",
+      waLabel: "Chat on WhatsApp",
+      waSubtitle: "We typically reply within minutes",
+      message: "Hi! I'd like to know more.",
+      demoLabel: "Book a Free Demo",
+      demoSubtitle: "15-minute personalized walkthrough",
+    };
+
+    let position = "right";
+
+    function setPosition(pos) {
+      position = pos;
+      document.getElementById("pos-right").classList.toggle("active", pos === "right");
+      document.getElementById("pos-left").classList.toggle("active", pos === "left");
+      generate();
+    }
+
+    // Toggle demo fields
+    document.getElementById("f-demo-toggle").addEventListener("change", function () {
+      document.getElementById("demo-fields").classList.toggle("active", this.checked);
+      generate();
+    });
+
+    // Sync color picker <-> text
+    document.getElementById("f-color-picker").addEventListener("input", function () {
+      document.getElementById("f-color").value = this.value.toUpperCase();
+      generate();
+    });
+
+    document.getElementById("f-color").addEventListener("input", function () {
+      if (/^#[0-9A-Fa-f]{6}$/.test(this.value)) {
+        document.getElementById("f-color-picker").value = this.value;
+      }
+      generate();
+    });
+
+    // Listen to all inputs
+    document.querySelectorAll(".form-panel input").forEach(function (el) {
+      el.addEventListener("input", generate);
+    });
+
+    function generate() {
+      const phone = document.getElementById("f-phone").value.trim();
+      const brand = document.getElementById("f-brand").value.trim();
+      const logo = document.getElementById("f-logo").value.trim();
+      const color = document.getElementById("f-color").value.trim();
+      const welcome = document.getElementById("f-welcome").value.trim();
+      const waLabel = document.getElementById("f-wa-label").value.trim();
+      const waSubtitle = document.getElementById("f-wa-subtitle").value.trim();
+      const message = document.getElementById("f-message").value.trim();
+      const showDemo = document.getElementById("f-demo-toggle").checked;
+      const demoUrl = document.getElementById("f-demo-url").value.trim();
+      const demoLabel = document.getElementById("f-demo-label").value.trim();
+      const demoSubtitle = document.getElementById("f-demo-subtitle").value.trim();
+
+      // Build attributes
+      const attrs = [];
+      attrs.push(['src', WIDGET_URL]);
+      if (phone) attrs.push(['data-phone', phone]);
+      if (brand) attrs.push(['data-brand', brand]);
+      if (logo) attrs.push(['data-logo', logo]);
+      if (color && color !== "#25D366") attrs.push(['data-color', color]);
+      if (welcome && welcome !== defaults.welcome) attrs.push(['data-welcome', welcome]);
+      if (waLabel && waLabel !== defaults.waLabel) attrs.push(['data-wa-label', waLabel]);
+      if (waSubtitle && waSubtitle !== defaults.waSubtitle) attrs.push(['data-wa-subtitle', waSubtitle]);
+      if (message && message !== defaults.message) attrs.push(['data-message', message]);
+      if (showDemo && demoUrl) attrs.push(['data-demo-url', demoUrl]);
+      if (showDemo && demoLabel && demoLabel !== defaults.demoLabel) attrs.push(['data-demo-label', demoLabel]);
+      if (showDemo && demoSubtitle && demoSubtitle !== defaults.demoSubtitle) attrs.push(['data-demo-subtitle', demoSubtitle]);
+      if (position === "left") attrs.push(['data-position', 'left']);
+
+      // Plain text for copying
+      let plain = "<script";
+      attrs.forEach(function (a) {
+        plain += '\n  ' + a[0] + '="' + a[1] + '"';
+      });
+      plain += "\n></" + "script>";
+
+      // Highlighted HTML
+      let highlighted = '<span class="hl-tag">&lt;script</span>';
+      attrs.forEach(function (a) {
+        highlighted +=
+          '\n  <span class="hl-attr">' + a[0] + '</span>=<span class="hl-str">"' +
+          escapeHtml(a[1]) + '"</span>';
+      });
+      highlighted += '\n<span class="hl-tag">&gt;&lt;/script&gt;</span>';
+
+      document.getElementById("code-output").innerHTML = highlighted;
+
+      // Store plain text for copy
+      document.getElementById("code-output").dataset.plain = plain;
+
+      // Build install page link
+      var installParams = new URLSearchParams();
+      if (phone) installParams.set("phone", phone);
+      if (brand) installParams.set("brand", brand);
+      if (logo) installParams.set("logo", logo);
+      if (color && color !== "#25D366") installParams.set("color", color);
+      if (welcome && welcome !== defaults.welcome) installParams.set("welcome", welcome);
+      if (waLabel && waLabel !== defaults.waLabel) installParams.set("wa-label", waLabel);
+      if (waSubtitle && waSubtitle !== defaults.waSubtitle) installParams.set("wa-subtitle", waSubtitle);
+      if (message && message !== defaults.message) installParams.set("message", message);
+      if (showDemo && demoUrl) installParams.set("demo-url", demoUrl);
+      if (showDemo && demoLabel && demoLabel !== defaults.demoLabel) installParams.set("demo-label", demoLabel);
+      if (showDemo && demoSubtitle && demoSubtitle !== defaults.demoSubtitle) installParams.set("demo-subtitle", demoSubtitle);
+      if (position === "left") installParams.set("position", "left");
+
+      var installUrl = "https://widget.reachmax.app/install?" + installParams.toString();
+      document.getElementById("install-link").textContent = installUrl;
+      document.getElementById("install-link").dataset.url = installUrl;
+      document.getElementById("install-link-open").href = installUrl;
+
+      // Update preview
+      updatePreview(attrs);
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function copyCode() {
+      const plain = document.getElementById("code-output").dataset.plain;
+      navigator.clipboard.writeText(plain).then(function () {
+        const label = document.getElementById("copy-label");
+        const btn = label.closest(".copy-btn");
+        label.textContent = "Copied!";
+        btn.classList.add("copied");
+        setTimeout(function () {
+          label.textContent = "Copy";
+          btn.classList.remove("copied");
+        }, 2000);
+      });
+    }
+
+    function copyLink() {
+      var url = document.getElementById("install-link").dataset.url;
+      navigator.clipboard.writeText(url).then(function () {
+        var label = document.getElementById("link-copy-label");
+        var btn = label.closest(".copy-btn");
+        label.textContent = "Copied!";
+        btn.classList.add("copied");
+        setTimeout(function () {
+          label.textContent = "Copy link";
+          btn.classList.remove("copied");
+        }, 2000);
+      });
+    }
+
+    // ── Live Preview ──────────────────────────────
+    let previewScript = null;
+    let previewTimeout = null;
+
+    function updatePreview(attrs) {
+      clearTimeout(previewTimeout);
+      previewTimeout = setTimeout(function () {
+        renderPreview(attrs);
+      }, 300);
+    }
+
+    function renderPreview(attrs) {
+      // Remove old widget from preview
+      const old = document.getElementById("rmx-wa-widget");
+      if (old) old.remove();
+
+      const oldStyle = document.querySelector("style[data-rmx-widget]");
+      if (oldStyle) oldStyle.remove();
+
+      if (previewScript) {
+        previewScript.remove();
+        previewScript = null;
+      }
+
+      // Create new script with data attrs in the preview frame context
+      const s = document.createElement("script");
+      attrs.forEach(function (a) {
+        if (a[0] === "src") {
+          s.src = a[1];
+        } else {
+          s.setAttribute(a[0], a[1]);
+        }
+      });
+
+      previewScript = s;
+      document.body.appendChild(s);
+    }
+
+    // Initial generation
+    generate();
+  </script>
+</body>
+</html>
