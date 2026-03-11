@@ -9,6 +9,7 @@ const R2_PUBLIC_BASE = "https://widget-assets.reachmax.app";
 const WIDGET_FIELDS = [
   "Company name",
   "Widget WA Number",
+  "Widget WA Number Formatted",
   "Company Logo",
   "Company website",
   "Short Company About",
@@ -72,7 +73,7 @@ async function fetchContacts(env) {
         allRecords.push({
           id: r.id,
           name: f["Company name"] || "",
-          phone: (f["Widget WA Number"] || "").replace(/[\s\n\r+]/g, ""),
+          phone: f["Widget WA Number Formatted"] || (f["Widget WA Number"] || "").replace(/[\s\n\r+]/g, ""),
           airtableLogo: logo ? logo.url : "",
           logoUrl: f["Widget Logo URL"] || "",
           color: f["Brand primary colour"] || "",
