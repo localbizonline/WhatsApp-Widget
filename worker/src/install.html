@@ -516,6 +516,9 @@
       brand: params.get("brand") || "Our Team",
       logo: params.get("logo") || "",
       color: params.get("color") || "#25D366",
+      headerColor: params.get("header-color") || "",
+      cta2Color: params.get("cta2-color") || "",
+      poweredColor: params.get("powered-color") || "",
       heading: params.get("heading") || "",
       welcome: params.get("welcome") || "",
       waIcon: params.get("wa-icon") || "",
@@ -571,6 +574,9 @@
     if (config.brand && config.brand !== "Our Team") attrs.push(["data-brand", config.brand]);
     if (config.logo) attrs.push(["data-logo", config.logo]);
     if (config.color && config.color !== "#25D366") attrs.push(["data-color", config.color]);
+    if (config.headerColor) attrs.push(["data-header-color", config.headerColor]);
+    if (config.cta2Color) attrs.push(["data-cta2-color", config.cta2Color]);
+    if (config.poweredColor) attrs.push(["data-powered-color", config.poweredColor]);
     if (config.heading && config.heading !== defaults.heading) attrs.push(["data-heading", config.heading]);
     if (config.welcome && config.welcome !== defaults.welcome) attrs.push(["data-welcome", config.welcome]);
     if (config.waIcon && config.waIcon !== defaults.waIcon) attrs.push(["data-wa-icon", config.waIcon]);
