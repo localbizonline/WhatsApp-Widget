@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Install WhatsApp Widget</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f9fafb;
+      color: #111827;
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* ── Header ──────────────────────────────────── */
+    .brand-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .brand-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .brand-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .brand-logo svg {
+      width: 28px;
+      height: 28px;
+      color: #fff;
+    }
+
+    .brand-header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .brand-header p {
+      font-size: 14px;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+
+    /* ── Card ─────────────────────────────────────── */
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #e5e7eb;
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+
+    .card h2 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .card > p {
+      font-size: 14px;
+      color: #6b7280;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    /* ── Code Block ───────────────────────────────── */
+    .code-block {
+      position: relative;
+      background: #1a1a2e;
+      border-radius: 12px;
+      padding: 20px;
+      overflow-x: auto;
+    }
+
+    .code-block pre {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #e2e8f0;
+      white-space: pre;
+      margin: 0;
+    }
+
+    .code-block .hl-tag { color: #f472b6; }
+    .code-block .hl-attr { color: #67e8f9; }
+    .code-block .hl-str { color: #86efac; }
+
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255,255,255,0.1);
+      color: #e2e8f0;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .copy-btn:hover { background: rgba(255,255,255,0.2); }
+    .copy-btn.copied { background: #25D366; color: #fff; }
+
+    /* ── Steps ────────────────────────────────────── */
+    .steps {
+      list-style: none;
+      counter-reset: step;
+    }
+
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      align-items: flex-start;
+    }
+
+    .steps li:last-child { margin-bottom: 0; }
+
+    .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .step-content {
+      flex: 1;
+      padding-top: 4px;
+    }
+
+    .step-content strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .step-content p {
+      font-size: 13px;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+
+    .step-content code {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: 'SF Mono', monospace;
+    }
+
+    /* ── Platform tabs ────────────────────────────── */
+    .platform-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .platform-tab {
+      padding: 8px 16px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      background: #f9fafb;
+      color: #6b7280;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .platform-tab.active {
+      background: #111827;
+      color: #fff;
+      border-color: #111827;
+    }
+
+    .platform-content { display: none; }
+    .platform-content.active { display: block; }
+
+    /* ── Preview badge ────────────────────────────── */
+    .preview-note {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: #166534;
+      margin-top: 16px;
+    }
+
+    .preview-note svg {
+      flex-shrink: 0;
+    }
+
+    /* ── Footer ───────────────────────────────────── */
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 40px;
+    }
+
+    .footer a {
+      color: #25D366;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* ── Support ──────────────────────────────────── */
+    .support-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #e5e7eb;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+    }
+
+    .support-card .support-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: #f0fdf4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .support-card .support-icon svg {
+      width: 22px;
+      height: 22px;
+      color: #25D366;
+    }
+
+    .support-card .support-text {
+      flex: 1;
+    }
+
+    .support-card .support-text strong {
+      font-size: 14px;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .support-card .support-text p {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .support-card .support-text a {
+      color: #25D366;
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+    <div class="brand-header" id="brand-header">
+      <div class="brand-logo" id="brand-logo"></div>
+      <div>
+        <h1 id="brand-title">Install WhatsApp Widget</h1>
+        <p>Add the widget to your website in under 2 minutes</p>
+      </div>
+    </div>
+
+    <!-- Step 1: Copy code -->
+    <div class="card">
+      <h2>Your embed code</h2>
+      <p>Copy this code and add it to your website. That's it — no accounts, no setup, no dependencies.</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          <span id="copy-label">Copy code</span>
+        </button>
+        <pre id="code-output"></pre>
+      </div>
+      <div class="preview-note">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>The widget is already live — click the button in the bottom-right corner to preview it.</span>
+      </div>
+    </div>
+
+    <!-- Step 2: Where to paste -->
+    <div class="card">
+      <h2>Where to paste it</h2>
+      <p>Choose your platform for specific instructions.</p>
+
+      <div class="platform-tabs">
+        <button class="platform-tab active" onclick="showPlatform('html')">HTML</button>
+        <button class="platform-tab" onclick="showPlatform('wordpress')">WordPress</button>
+        <button class="platform-tab" onclick="showPlatform('shopify')">Shopify</button>
+        <button class="platform-tab" onclick="showPlatform('wix')">Wix</button>
+        <button class="platform-tab" onclick="showPlatform('snappages')">SnapPages</button>
+      </div>
+
+      <div id="platform-html" class="platform-content active">
+        <ol class="steps">
+          <li>
+            <div class="step-num" id="sn1">1</div>
+            <div class="step-content">
+              <strong>Open your HTML file</strong>
+              <p>Open the main HTML file of your website (usually <code>index.html</code>).</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" id="sn2">2</div>
+            <div class="step-content">
+              <strong>Find the closing body tag</strong>
+              <p>Scroll to the bottom and find <code>&lt;/body&gt;</code>.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" id="sn3">3</div>
+            <div class="step-content">
+              <strong>Paste the code above it</strong>
+              <p>Paste your embed code just before <code>&lt;/body&gt;</code> and save. Done.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div id="platform-wordpress" class="platform-content">
+        <ol class="steps">
+          <li>
+            <div class="step-num" id="sn4">1</div>
+            <div class="step-content">
+              <strong>Go to Appearance &rarr; Theme File Editor</strong>
+              <p>In your WordPress admin, navigate to <strong>Appearance &rarr; Theme File Editor</strong>.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" id="sn5">2</div>
+            <div class="step-content">
+              <strong>Open footer.php</strong>
+              <p>Select <code>footer.php</code> from the file list on the right.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" id="sn6">3</div>
+            <div class="step-content">
+              <strong>Paste before &lt;/body&gt;</strong>
+              <p>Paste the embed code just before <code>&lt;/body&gt;</code> and click <strong>Update File</strong>.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" id="sn7">4</div>
+            <div class="step-content">
+              <strong>Alternative: Use a plugin</strong>
+              <p>Install <strong>WPCode</strong> (free plugin), create a new snippet, paste the code, set it to load in the footer on all pages.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div id="platform-shopify" class="platform-content">
+        <ol class="steps">
+          <li>
+            <div class="step-num" id="sn8">1</div>
+            <div class="step-content">
+              <strong>Go to Online Store &rarr; Themes</strong>
+              <p>In your Shopify admin, go to <strong>Online Store &rarr; Themes</strong>.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" id="sn9">2</div>
+            <div class="step-content">
+              <strong>Edit code</strong>
+              <p>Click <strong>Actions &rarr; Edit code</strong> on your current theme.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" id="sn10">3</div>
+            <div class="step-content">
+              <strong>Open theme.liquid</strong>
+              <p>Find and open <code>Layout/theme.liquid</code>.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" id="sn11">4</div>
+            <div class="step-content">
+              <strong>Paste before &lt;/body&gt;</strong>
+              <p>Paste the embed code just before <code>&lt;/body&gt;</code> and click <strong>Save</strong>.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div id="platform-wix" class="platform-content">
+        <ol class="steps">
+          <li>
+            <div class="step-num" id="sn12">1</div>
+            <div class="step-content">
+              <strong>Open Site Settings</strong>
+              <p>In your Wix dashboard, go to <strong>Settings &rarr; Custom Code</strong> (under Advanced).</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" id="sn13">2</div>
+            <div class="step-content">
+              <strong>Add custom code</strong>
+              <p>Click <strong>+ Add Custom Code</strong>, paste the embed code.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" id="sn14">3</div>
+            <div class="step-content">
+              <strong>Set placement</strong>
+              <p>Set it to load on <strong>All pages</strong>, placed in the <strong>Body - end</strong>. Click Apply.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div id="platform-snappages" class="platform-content">
+        <ol class="steps">
+          <li>
+            <div class="step-num" id="sn15">1</div>
+            <div class="step-content">
+              <strong>Open your SnapPages editor</strong>
+              <p>Log in to your SnapPages account and open the site you want to add the widget to.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" id="sn16">2</div>
+            <div class="step-content">
+              <strong>Go to Settings &rarr; Custom Code</strong>
+              <p>In the site editor, click <strong>Settings</strong> (gear icon) then select <strong>Custom Code</strong> or <strong>Header/Footer Code</strong>.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" id="sn17">3</div>
+            <div class="step-content">
+              <strong>Paste in the Footer Code section</strong>
+              <p>Paste the embed code into the <strong>Footer Code</strong> (before &lt;/body&gt;) section.</p>
+            </div>
+          </li>
+          <li>
+            <div class="step-num" id="sn18">4</div>
+            <div class="step-content">
+              <strong>Save and publish</strong>
+              <p>Click <strong>Save</strong>, then <strong>Publish</strong> your site. The widget will appear on all pages.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Support -->
+    <div class="support-card">
+      <div class="support-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      </div>
+      <div class="support-text">
+        <strong>Need help?</strong>
+        <p>Message us on <a href="https://wa.me/27787869161?text=Hi!%20I%20need%20help%20installing%20the%20WhatsApp%20widget." target="_blank">WhatsApp</a> and we'll get you set up.</p>
+      </div>
+    </div>
+
+    <div class="footer">
+      Powered by <a href="https://www.reachmax.app" target="_blank">ReachMax</a>
+    </div>
+  </div>
+
+  <script>
+    const WIDGET_URL = "https://widget.reachmax.app/widget.js";
+
+    const params = new URLSearchParams(window.location.search);
+
+    const config = {
+      phone: params.get("phone") || "",
+      brand: params.get("brand") || "Our Team",
+      logo: params.get("logo") || "",
+      color: params.get("color") || "#25D366",
+      heading: params.get("heading") || "",
+      welcome: params.get("welcome") || "",
+      waIcon: params.get("wa-icon") || "",
+      waLabel: params.get("wa-label") || "",
+      waSubtitle: params.get("wa-subtitle") || "",
+      message: params.get("message") || "",
+      demoUrl: params.get("demo-url") || "",
+      demoLabel: params.get("demo-label") || "",
+      demoSubtitle: params.get("demo-subtitle") || "",
+      demoIcon: params.get("demo-icon") || "",
+      cta2Type: params.get("cta2-type") || "",
+      cta2Phone: params.get("cta2-phone") || "",
+      cta2Message: params.get("cta2-message") || "",
+      position: params.get("position") || "",
+    };
+
+    // ── Set page branding ──────────────────────────
+    document.title = "Install WhatsApp Widget — " + config.brand;
+
+    const brandLogo = document.getElementById("brand-logo");
+    brandLogo.style.background = config.color;
+    if (config.logo) {
+      brandLogo.innerHTML = '<img src="' + config.logo + '" alt="' + config.brand + '" />';
+    } else {
+      brandLogo.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" style="color:#fff;width:28px;height:28px"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
+    }
+
+    document.getElementById("brand-title").textContent = "Install Widget — " + config.brand;
+
+    // Color the step numbers
+    const color = config.color;
+    document.querySelectorAll(".step-num").forEach(function (el) {
+      el.style.background = color;
+    });
+
+    // ── Build embed code ───────────────────────────
+    const defaults = {
+      heading: "Welcome to",
+      welcome: "How can we help you today?",
+      waIcon: "whatsapp",
+      waLabel: "Chat on WhatsApp",
+      waSubtitle: "We typically reply within minutes",
+      message: "Hi! I'd like to know more.",
+      demoLabel: "Book a Free Demo",
+      demoSubtitle: "15-minute personalized walkthrough",
+      demoIcon: "calendar",
+      cta2Message: "Hi! I'd like to know more.",
+    };
+
+    const attrs = [];
+    attrs.push(["src", WIDGET_URL]);
+    if (config.phone) attrs.push(["data-phone", config.phone]);
+    if (config.brand && config.brand !== "Our Team") attrs.push(["data-brand", config.brand]);
+    if (config.logo) attrs.push(["data-logo", config.logo]);
+    if (config.color && config.color !== "#25D366") attrs.push(["data-color", config.color]);
+    if (config.heading && config.heading !== defaults.heading) attrs.push(["data-heading", config.heading]);
+    if (config.welcome && config.welcome !== defaults.welcome) attrs.push(["data-welcome", config.welcome]);
+    if (config.waIcon && config.waIcon !== defaults.waIcon) attrs.push(["data-wa-icon", config.waIcon]);
+    if (config.waLabel && config.waLabel !== defaults.waLabel) attrs.push(["data-wa-label", config.waLabel]);
+    if (config.waSubtitle && config.waSubtitle !== defaults.waSubtitle) attrs.push(["data-wa-subtitle", config.waSubtitle]);
+    if (config.message && config.message !== defaults.message) attrs.push(["data-message", config.message]);
+    if (config.cta2Type === "whatsapp") {
+      attrs.push(["data-cta2-type", "whatsapp"]);
+      if (config.cta2Phone) attrs.push(["data-cta2-phone", config.cta2Phone]);
+      if (config.cta2Message && config.cta2Message !== defaults.cta2Message) attrs.push(["data-cta2-message", config.cta2Message]);
+    } else if (config.demoUrl) {
+      attrs.push(["data-demo-url", config.demoUrl]);
+    }
+    if (config.demoLabel && config.demoLabel !== defaults.demoLabel) attrs.push(["data-demo-label", config.demoLabel]);
+    if (config.demoSubtitle && config.demoSubtitle !== defaults.demoSubtitle) attrs.push(["data-demo-subtitle", config.demoSubtitle]);
+    if (config.demoIcon && config.demoIcon !== defaults.demoIcon) attrs.push(["data-demo-icon", config.demoIcon]);
+    if (config.position === "left") attrs.push(["data-position", "left"]);
+
+    // Plain text
+    var plain = "<script";
+    attrs.forEach(function (a) {
+      plain += "\n  " + a[0] + '="' + a[1] + '"';
+    });
+    plain += "\n></" + "script>";
+
+    // Highlighted
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    var highlighted = '<span class="hl-tag">&lt;script</span>';
+    attrs.forEach(function (a) {
+      highlighted +=
+        '\n  <span class="hl-attr">' + a[0] + '</span>=<span class="hl-str">"' +
+        escapeHtml(a[1]) + '"</span>';
+    });
+    highlighted += '\n<span class="hl-tag">&gt;&lt;/script&gt;</span>';
+
+    document.getElementById("code-output").innerHTML = highlighted;
+    document.getElementById("code-output").dataset.plain = plain;
+
+    // ── Copy ───────────────────────────────────────
+    function copyCode() {
+      var text = document.getElementById("code-output").dataset.plain;
+      navigator.clipboard.writeText(text).then(function () {
+        var label = document.getElementById("copy-label");
+        var btn = label.closest(".copy-btn");
+        label.textContent = "Copied!";
+        btn.classList.add("copied");
+        setTimeout(function () {
+          label.textContent = "Copy code";
+          btn.classList.remove("copied");
+        }, 2000);
+      });
+    }
+    window.copyCode = copyCode;
+
+    // ── Platform tabs ──────────────────────────────
+    function showPlatform(id) {
+      document.querySelectorAll(".platform-tab").forEach(function (t) {
+        t.classList.remove("active");
+      });
+      document.querySelectorAll(".platform-content").forEach(function (c) {
+        c.classList.remove("active");
+      });
+      event.target.classList.add("active");
+      document.getElementById("platform-" + id).classList.add("active");
+    }
+    window.showPlatform = showPlatform;
+
+    // ── Load actual widget as preview ──────────────
+    var s = document.createElement("script");
+    attrs.forEach(function (a) {
+      if (a[0] === "src") s.src = a[1];
+      else s.setAttribute(a[0], a[1]);
+    });
+    document.body.appendChild(s);
+  </script>
+</body>
+</html>

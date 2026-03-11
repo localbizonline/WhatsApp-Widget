@@ -1,5 +1,6 @@
 import WIDGET_JS from "./widget.txt";
 import GENERATOR_HTML from "./generator.html";
+import INSTALL_HTML from "./install.html";
 
 const AIRTABLE_BASE_ID = "app7AZ1zHElQfR4EH";
 const AIRTABLE_TABLE_ID = "tblUrtOlK3majSIFi";
@@ -191,6 +192,16 @@ export default {
     // Generator UI (generator.reachmax.app)
     if (url.hostname === "generator.reachmax.app" && (url.pathname === "/" || url.pathname === "/index.html")) {
       return new Response(GENERATOR_HTML, {
+        headers: {
+          "Content-Type": "text/html; charset=utf-8",
+          "Cache-Control": "no-cache",
+        },
+      });
+    }
+
+    // Install page
+    if (url.pathname === "/install" || url.pathname === "/install.html") {
+      return new Response(INSTALL_HTML, {
         headers: {
           "Content-Type": "text/html; charset=utf-8",
           "Cache-Control": "no-cache",
