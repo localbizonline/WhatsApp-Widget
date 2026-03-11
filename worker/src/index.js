@@ -2,26 +2,32 @@ import WIDGET_JS from "./widget.txt";
 import GENERATOR_HTML from "./generator.html";
 import INSTALL_HTML from "./install.html";
 
-const AIRTABLE_BASE_ID = "app7AZ1zHElQfR4EH";
-const AIRTABLE_TABLE_ID = "tblUrtOlK3majSIFi";
+const AIRTABLE_BASE_ID = "appkPuvsxFxEmy5fm";
+const AIRTABLE_TABLE_ID = "tblnE0hIA1Z4LlXEz";
 const R2_PUBLIC_BASE = "https://widget-assets.reachmax.app";
 
 const WIDGET_FIELDS = [
   "Company name",
-  "WhatsApp Number",
-  "Whatsapp Nr Formatted",
-  "Partner Logo",
+  "Contact number",
+  "Company Logo",
+  "Company website",
+  "Short Company About",
   "Brand primary colour",
-  "Client status",
   "Widget Logo URL",
+  "Widget Heading Text",
   "Widget Welcome Text",
   "Widget WA Label",
   "Widget WA Subtitle",
+  "Widget WA Icon",
   "Widget Prefilled Message",
   "Widget Show Booking",
+  "Widget CTA2 Type",
   "Widget Booking URL",
+  "Widget CTA2 Phone",
+  "Widget CTA2 Message",
   "Widget Booking Label",
   "Widget Booking Subtitle",
+  "Widget Demo Icon",
   "Widget Position",
 ];
 
@@ -43,7 +49,6 @@ function jsonResponse(data, status = 200) {
 async function fetchContacts(env) {
   const params = new URLSearchParams();
   WIDGET_FIELDS.forEach((f) => params.append("fields[]", f));
-  params.set("filterByFormula", "{Client status} = 'Active'");
   params.set("sort[0][field]", "Company name");
   params.set("sort[0][direction]", "asc");
   params.set("pageSize", "100");
@@ -63,22 +68,28 @@ async function fetchContacts(env) {
     if (data.records) {
       for (const r of data.records) {
         const f = r.fields;
-        const logo = Array.isArray(f["Partner Logo"]) && f["Partner Logo"][0];
+        const logo = Array.isArray(f["Company Logo"]) && f["Company Logo"][0];
         allRecords.push({
           id: r.id,
           name: f["Company name"] || "",
-          phone: f["Whatsapp Nr Formatted"] || f["WhatsApp Number"] || "",
+          phone: (f["Contact number"] || "").replace(/[\s\n\r+]/g, ""),
           airtableLogo: logo ? logo.url : "",
           logoUrl: f["Widget Logo URL"] || "",
           color: f["Brand primary colour"] || "",
+          heading: f["Widget Heading Text"] || "",
           welcome: f["Widget Welcome Text"] || "",
           waLabel: f["Widget WA Label"] || "",
           waSubtitle: f["Widget WA Subtitle"] || "",
+          waIcon: f["Widget WA Icon"] || "",
           message: f["Widget Prefilled Message"] || "",
           showBooking: !!f["Widget Show Booking"],
+          cta2Type: f["Widget CTA2 Type"] || "",
           bookingUrl: f["Widget Booking URL"] || "",
+          cta2Phone: f["Widget CTA2 Phone"] || "",
+          cta2Message: f["Widget CTA2 Message"] || "",
           bookingLabel: f["Widget Booking Label"] || "",
           bookingSubtitle: f["Widget Booking Subtitle"] || "",
+          demoIcon: f["Widget Demo Icon"] || "",
           position: f["Widget Position"] || "right",
         });
       }
@@ -135,16 +146,22 @@ async function syncLogo(env, recordId, airtableUrl) {
 async function saveSettings(env, recordId, settings) {
   const fields = {};
 
-  if (settings.phone !== undefined) fields["Whatsapp Nr Formatted"] = settings.phone;
+  if (settings.phone !== undefined) fields["Contact number"] = settings.phone;
   if (settings.color !== undefined) fields["Brand primary colour"] = settings.color;
+  if (settings.heading !== undefined) fields["Widget Heading Text"] = settings.heading;
   if (settings.welcome !== undefined) fields["Widget Welcome Text"] = settings.welcome;
   if (settings.waLabel !== undefined) fields["Widget WA Label"] = settings.waLabel;
   if (settings.waSubtitle !== undefined) fields["Widget WA Subtitle"] = settings.waSubtitle;
+  if (settings.waIcon !== undefined) fields["Widget WA Icon"] = settings.waIcon;
   if (settings.message !== undefined) fields["Widget Prefilled Message"] = settings.message;
   if (settings.showBooking !== undefined) fields["Widget Show Booking"] = !!settings.showBooking;
+  if (settings.cta2Type !== undefined) fields["Widget CTA2 Type"] = settings.cta2Type;
   if (settings.bookingUrl !== undefined) fields["Widget Booking URL"] = settings.bookingUrl;
+  if (settings.cta2Phone !== undefined) fields["Widget CTA2 Phone"] = settings.cta2Phone;
+  if (settings.cta2Message !== undefined) fields["Widget CTA2 Message"] = settings.cta2Message;
   if (settings.bookingLabel !== undefined) fields["Widget Booking Label"] = settings.bookingLabel;
   if (settings.bookingSubtitle !== undefined) fields["Widget Booking Subtitle"] = settings.bookingSubtitle;
+  if (settings.demoIcon !== undefined) fields["Widget Demo Icon"] = settings.demoIcon;
   if (settings.position !== undefined) fields["Widget Position"] = settings.position === "left" ? "left" : "right";
   if (settings.embedCode !== undefined) fields["Widget Embed Code"] = settings.embedCode;
   if (settings.installLink !== undefined) fields["Widget Install Link"] = settings.installLink;
