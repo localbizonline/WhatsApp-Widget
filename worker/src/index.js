@@ -8,7 +8,7 @@ const R2_PUBLIC_BASE = "https://widget-assets.reachmax.app";
 
 const WIDGET_FIELDS = [
   "Company name",
-  "Contact number",
+  "Widget WA Number",
   "Company Logo",
   "Company website",
   "Short Company About",
@@ -72,7 +72,7 @@ async function fetchContacts(env) {
         allRecords.push({
           id: r.id,
           name: f["Company name"] || "",
-          phone: (f["Contact number"] || "").replace(/[\s\n\r+]/g, ""),
+          phone: (f["Widget WA Number"] || "").replace(/[\s\n\r+]/g, ""),
           airtableLogo: logo ? logo.url : "",
           logoUrl: f["Widget Logo URL"] || "",
           color: f["Brand primary colour"] || "",
@@ -146,7 +146,7 @@ async function syncLogo(env, recordId, airtableUrl) {
 async function saveSettings(env, recordId, settings) {
   const fields = {};
 
-  if (settings.phone !== undefined) fields["Contact number"] = settings.phone;
+  if (settings.phone !== undefined) fields["Widget WA Number"] = settings.phone;
   if (settings.color !== undefined) fields["Brand primary colour"] = settings.color;
   if (settings.heading !== undefined) fields["Widget Heading Text"] = settings.heading;
   if (settings.welcome !== undefined) fields["Widget Welcome Text"] = settings.welcome;
