@@ -437,11 +437,41 @@
         </div>
       </div>
 
+      <div class="section-label">Colors</div>
+
       <div class="form-group">
-        <label>Brand Color</label>
+        <label>FAB Button Color</label>
+        <div class="hint">Floating action button in the corner</div>
         <div class="color-row">
           <input type="color" id="f-color-picker" value="#25D366" />
           <input type="text" id="f-color" value="#25D366" placeholder="#25D366" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Header Color</label>
+        <div class="hint">Panel header background gradient</div>
+        <div class="color-row">
+          <input type="color" id="f-header-color-picker" value="#25D366" />
+          <input type="text" id="f-header-color" value="#25D366" placeholder="#25D366" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Button Icon Color</label>
+        <div class="hint">WhatsApp button and second CTA icon color</div>
+        <div class="color-row">
+          <input type="color" id="f-cta2-color-picker" value="#25D366" />
+          <input type="text" id="f-cta2-color" value="#25D366" placeholder="#25D366" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Powered By Link Color</label>
+        <div class="hint">"Powered by" text link at the bottom</div>
+        <div class="color-row">
+          <input type="color" id="f-powered-color-picker" value="#25D366" />
+          <input type="text" id="f-powered-color" value="#25D366" placeholder="#25D366" />
         </div>
       </div>
 
@@ -619,7 +649,8 @@
   </div>
 
   <script>
-    const API_BASE = "https://widget.reachmax.app";
+    const isLocal = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+    const API_BASE = isLocal ? location.origin : "https://widget.reachmax.app";
     const WIDGET_URL = API_BASE + "/widget.js";
 
     const defaults = {
@@ -677,6 +708,12 @@
       document.getElementById("f-logo").value = "";
       document.getElementById("f-color").value = "#25D366";
       document.getElementById("f-color-picker").value = "#25D366";
+      document.getElementById("f-header-color").value = "#25D366";
+      document.getElementById("f-header-color-picker").value = "#25D366";
+      document.getElementById("f-cta2-color").value = "#25D366";
+      document.getElementById("f-cta2-color-picker").value = "#25D366";
+      document.getElementById("f-powered-color").value = "#25D366";
+      document.getElementById("f-powered-color-picker").value = "#25D366";
       document.getElementById("f-heading").value = "";
       document.getElementById("f-welcome").value = "";
       document.getElementById("f-wa-label").value = "";
@@ -736,13 +773,19 @@
         previewRow.style.display = "none";
       }
 
-      // Color
-      var color = contact.color || "#25D366";
-      if (!/^#/.test(color)) color = "#" + color;
-      if (/^#[0-9A-Fa-f]{6}$/i.test(color)) {
-        document.getElementById("f-color").value = color;
-        document.getElementById("f-color-picker").value = color;
+      // Colors
+      function setColor(val, textId, pickerId) {
+        var c = val || "#25D366";
+        if (!/^#/.test(c)) c = "#" + c;
+        if (/^#[0-9A-Fa-f]{6}$/i.test(c)) {
+          document.getElementById(textId).value = c;
+          document.getElementById(pickerId).value = c;
+        }
       }
+      setColor(contact.color, "f-color", "f-color-picker");
+      setColor(contact.headerColor, "f-header-color", "f-header-color-picker");
+      setColor(contact.cta2Color, "f-cta2-color", "f-cta2-color-picker");
+      setColor(contact.poweredColor, "f-powered-color", "f-powered-color-picker");
 
       // Widget-specific fields
       document.getElementById("f-heading").value = contact.heading || "";
@@ -839,6 +882,9 @@
       var settings = {
         phone: document.getElementById("f-phone").value.trim(),
         color: document.getElementById("f-color").value.trim(),
+        headerColor: document.getElementById("f-header-color").value.trim(),
+        cta2Color: document.getElementById("f-cta2-color").value.trim(),
+        poweredColor: document.getElementById("f-powered-color").value.trim(),
         heading: document.getElementById("f-heading").value.trim(),
         welcome: document.getElementById("f-welcome").value.trim(),
         waLabel: document.getElementById("f-wa-label").value.trim(),
@@ -949,6 +995,42 @@
       generate();
     });
 
+    // Header color sync
+    document.getElementById("f-header-color-picker").addEventListener("input", function () {
+      document.getElementById("f-header-color").value = this.value.toUpperCase();
+      generate();
+    });
+    document.getElementById("f-header-color").addEventListener("input", function () {
+      if (/^#[0-9A-Fa-f]{6}$/.test(this.value)) {
+        document.getElementById("f-header-color-picker").value = this.value;
+      }
+      generate();
+    });
+
+    // CTA2 icon color sync
+    document.getElementById("f-cta2-color-picker").addEventListener("input", function () {
+      document.getElementById("f-cta2-color").value = this.value.toUpperCase();
+      generate();
+    });
+    document.getElementById("f-cta2-color").addEventListener("input", function () {
+      if (/^#[0-9A-Fa-f]{6}$/.test(this.value)) {
+        document.getElementById("f-cta2-color-picker").value = this.value;
+      }
+      generate();
+    });
+
+    // Powered by color sync
+    document.getElementById("f-powered-color-picker").addEventListener("input", function () {
+      document.getElementById("f-powered-color").value = this.value.toUpperCase();
+      generate();
+    });
+    document.getElementById("f-powered-color").addEventListener("input", function () {
+      if (/^#[0-9A-Fa-f]{6}$/.test(this.value)) {
+        document.getElementById("f-powered-color-picker").value = this.value;
+      }
+      generate();
+    });
+
     // Listen to all inputs and selects
     document.querySelectorAll(".form-panel input, .form-panel select").forEach(function (el) {
       el.addEventListener("input", generate);
@@ -961,6 +1043,9 @@
       var brand = document.getElementById("f-brand").value.trim();
       var logo = document.getElementById("f-logo").value.trim();
       var color = document.getElementById("f-color").value.trim();
+      var headerColor = document.getElementById("f-header-color").value.trim();
+      var cta2Color = document.getElementById("f-cta2-color").value.trim();
+      var poweredColor = document.getElementById("f-powered-color").value.trim();
       var heading = document.getElementById("f-heading").value.trim();
       var welcome = document.getElementById("f-welcome").value.trim();
       var waLabel = document.getElementById("f-wa-label").value.trim();
@@ -981,7 +1066,10 @@
       if (phone) attrs.push(['data-phone', phone]);
       if (brand) attrs.push(['data-brand', brand]);
       if (logo) attrs.push(['data-logo', logo]);
-      if (color && color !== "#25D366") attrs.push(['data-color', color]);
+      if (color) attrs.push(['data-color', color]);
+      if (headerColor) attrs.push(['data-header-color', headerColor]);
+      if (cta2Color) attrs.push(['data-cta2-color', cta2Color]);
+      if (poweredColor) attrs.push(['data-powered-color', poweredColor]);
       if (heading && heading !== defaults.heading) attrs.push(['data-heading', heading]);
       if (welcome && welcome !== defaults.welcome) attrs.push(['data-welcome', welcome]);
       if (waIcon && waIcon !== defaults.waIcon) attrs.push(['data-wa-icon', waIcon]);
@@ -1025,7 +1113,10 @@
       if (phone) installParams.set("phone", phone);
       if (brand) installParams.set("brand", brand);
       if (logo) installParams.set("logo", logo);
-      if (color && color !== "#25D366") installParams.set("color", color);
+      if (color) installParams.set("color", color);
+      if (headerColor) installParams.set("header-color", headerColor);
+      if (cta2Color) installParams.set("cta2-color", cta2Color);
+      if (poweredColor) installParams.set("powered-color", poweredColor);
       if (heading && heading !== defaults.heading) installParams.set("heading", heading);
       if (welcome && welcome !== defaults.welcome) installParams.set("welcome", welcome);
       if (waIcon && waIcon !== defaults.waIcon) installParams.set("wa-icon", waIcon);

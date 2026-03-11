@@ -14,6 +14,9 @@ const WIDGET_FIELDS = [
   "Company website",
   "Short Company About",
   "Brand primary colour",
+  "Widget Header Colour",
+  "Widget CTA2 Colour",
+  "Widget Powered Colour",
   "Widget Logo URL",
   "Widget Heading Text",
   "Widget Welcome Text",
@@ -77,6 +80,9 @@ async function fetchContacts(env) {
           airtableLogo: logo ? logo.url : "",
           logoUrl: f["Widget Logo URL"] || "",
           color: f["Brand primary colour"] || "",
+          headerColor: f["Widget Header Colour"] || "",
+          cta2Color: f["Widget CTA2 Colour"] || "",
+          poweredColor: f["Widget Powered Colour"] || "",
           heading: f["Widget Heading Text"] || "",
           welcome: f["Widget Welcome Text"] || "",
           waLabel: f["Widget WA Label"] || "",
@@ -149,6 +155,9 @@ async function saveSettings(env, recordId, settings) {
 
   if (settings.phone !== undefined) fields["Widget WA Number"] = settings.phone;
   if (settings.color !== undefined) fields["Brand primary colour"] = settings.color;
+  if (settings.headerColor !== undefined) fields["Widget Header Colour"] = settings.headerColor;
+  if (settings.cta2Color !== undefined) fields["Widget CTA2 Colour"] = settings.cta2Color;
+  if (settings.poweredColor !== undefined) fields["Widget Powered Colour"] = settings.poweredColor;
   if (settings.heading !== undefined) fields["Widget Heading Text"] = settings.heading;
   if (settings.welcome !== undefined) fields["Widget Welcome Text"] = settings.welcome;
   if (settings.waLabel !== undefined) fields["Widget WA Label"] = settings.waLabel;
@@ -207,8 +216,8 @@ export default {
       return new Response(null, { headers: corsHeaders });
     }
 
-    // Generator UI (generator.reachmax.app)
-    if (url.hostname === "generator.reachmax.app" && (url.pathname === "/" || url.pathname === "/index.html")) {
+    // Generator UI (generator.reachmax.app or /generator for local dev)
+    if (url.pathname === "/generator" || (url.hostname === "generator.reachmax.app" && (url.pathname === "/" || url.pathname === "/index.html"))) {
       return new Response(GENERATOR_HTML, {
         headers: {
           "Content-Type": "text/html; charset=utf-8",
