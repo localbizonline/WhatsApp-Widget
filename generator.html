@@ -229,6 +229,23 @@
       border: 1px solid #e5e7eb;
     }
 
+    .logo-upload-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      background: #fff;
+      color: #374151;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .logo-upload-btn:hover { background: #f3f4f6; }
+
     .logo-sync-btn {
       padding: 6px 14px;
       font-size: 12px;
@@ -403,8 +420,15 @@
       </div>
 
       <div class="form-group">
-        <label>Logo URL</label>
-        <div class="hint">Square image works best (PNG or SVG)</div>
+        <label>Logo</label>
+        <div class="hint">Square image works best (PNG or SVG). Upload a file or paste a URL.</div>
+        <div style="display:flex;gap:8px;margin-bottom:8px;">
+          <label class="logo-upload-btn" id="logo-upload-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload
+            <input type="file" id="f-logo-file" accept="image/*" style="display:none;" />
+          </label>
+        </div>
         <input type="url" id="f-logo" placeholder="https://example.com/logo.png" />
         <div class="logo-preview-row" id="logo-preview-row" style="display:none;">
           <img id="logo-preview-img" src="" alt="Logo" />
@@ -425,6 +449,12 @@
       <div class="section-label">Messages</div>
 
       <div class="form-group">
+        <label>Heading Text</label>
+        <div class="hint">Text shown above the brand name in the widget header</div>
+        <input type="text" id="f-heading" placeholder="Welcome to" />
+      </div>
+
+      <div class="form-group">
         <label>Welcome Text</label>
         <input type="text" id="f-welcome" placeholder="How can we help you today?" />
       </div>
@@ -440,16 +470,32 @@
       </div>
 
       <div class="form-group">
+        <label>WhatsApp Button Icon</label>
+        <select id="f-wa-icon">
+          <option value="whatsapp">WhatsApp</option>
+          <option value="phone">Phone</option>
+          <option value="chat">Chat</option>
+          <option value="email">Email</option>
+          <option value="star">Star</option>
+          <option value="globe">Globe</option>
+          <option value="map-pin">Map Pin</option>
+          <option value="link">Link</option>
+          <option value="calendar">Calendar</option>
+          <option value="cart">Cart</option>
+        </select>
+      </div>
+
+      <div class="form-group">
         <label>Pre-filled Message</label>
         <div class="hint">Message that appears in WhatsApp when they tap send</div>
         <input type="text" id="f-message" placeholder="Hi! I'd like to know more." />
       </div>
 
       <hr class="section-divider" />
-      <div class="section-label">Demo / Booking Link</div>
+      <div class="section-label">Second Call to Action</div>
 
       <div class="toggle-row">
-        <label>Show booking button</label>
+        <label>Add a second call to action</label>
         <label class="toggle">
           <input type="checkbox" id="f-demo-toggle" />
           <span class="slider"></span>
@@ -458,10 +504,36 @@
 
       <div class="demo-fields" id="demo-fields">
         <div class="form-group">
-          <label>Booking URL</label>
-          <input type="url" id="f-demo-url" placeholder="https://cal.com/your-link" />
+          <label>Type</label>
+          <select id="f-cta2-type">
+            <option value="link">Link Button</option>
+            <option value="whatsapp">WhatsApp Number</option>
+          </select>
         </div>
 
+        <!-- Link Button fields -->
+        <div id="cta2-link-fields">
+          <div class="form-group">
+            <label>Button URL</label>
+            <input type="url" id="f-demo-url" placeholder="https://cal.com/your-link" />
+          </div>
+        </div>
+
+        <!-- WhatsApp fields -->
+        <div id="cta2-wa-fields" style="display:none;">
+          <div class="form-group">
+            <label>WhatsApp Number</label>
+            <div class="hint">With country code, no + or spaces</div>
+            <input type="tel" id="f-cta2-phone" placeholder="27831234567" />
+          </div>
+
+          <div class="form-group">
+            <label>Pre-filled Message</label>
+            <input type="text" id="f-cta2-message" placeholder="Hi! I'd like to know more." />
+          </div>
+        </div>
+
+        <!-- Shared fields -->
         <div class="form-group">
           <label>Button Label</label>
           <input type="text" id="f-demo-label" placeholder="Book a Free Demo" />
@@ -470,6 +542,22 @@
         <div class="form-group">
           <label>Button Subtitle</label>
           <input type="text" id="f-demo-subtitle" placeholder="15-minute personalized walkthrough" />
+        </div>
+
+        <div class="form-group">
+          <label>Button Icon</label>
+          <select id="f-demo-icon">
+            <option value="calendar">Calendar</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="phone">Phone</option>
+            <option value="chat">Chat</option>
+            <option value="email">Email</option>
+            <option value="star">Star</option>
+            <option value="globe">Globe</option>
+            <option value="map-pin">Map Pin</option>
+            <option value="link">Link</option>
+            <option value="cart">Cart</option>
+          </select>
         </div>
       </div>
 
@@ -535,12 +623,16 @@
     const WIDGET_URL = API_BASE + "/widget.js";
 
     const defaults = {
+      heading: "Welcome to",
       welcome: "How can we help you today?",
       waLabel: "Chat on WhatsApp",
       waSubtitle: "We typically reply within minutes",
+      waIcon: "whatsapp",
       message: "Hi! I'd like to know more.",
       demoLabel: "Book a Free Demo",
       demoSubtitle: "15-minute personalized walkthrough",
+      demoIcon: "calendar",
+      cta2Message: "Hi! I'd like to know more.",
     };
 
     let position = "right";
@@ -585,15 +677,23 @@
       document.getElementById("f-logo").value = "";
       document.getElementById("f-color").value = "#25D366";
       document.getElementById("f-color-picker").value = "#25D366";
+      document.getElementById("f-heading").value = "";
       document.getElementById("f-welcome").value = "";
       document.getElementById("f-wa-label").value = "";
       document.getElementById("f-wa-subtitle").value = "";
+      document.getElementById("f-wa-icon").value = "whatsapp";
       document.getElementById("f-message").value = "";
       document.getElementById("f-demo-toggle").checked = false;
       document.getElementById("demo-fields").classList.remove("active");
+      document.getElementById("f-cta2-type").value = "link";
       document.getElementById("f-demo-url").value = "";
+      document.getElementById("f-cta2-phone").value = "";
+      document.getElementById("f-cta2-message").value = "";
       document.getElementById("f-demo-label").value = "";
       document.getElementById("f-demo-subtitle").value = "";
+      document.getElementById("f-demo-icon").value = "calendar";
+      document.getElementById("cta2-link-fields").style.display = "";
+      document.getElementById("cta2-wa-fields").style.display = "none";
       document.getElementById("logo-preview-row").style.display = "none";
       document.getElementById("save-btn").disabled = true;
       document.getElementById("save-status").textContent = "";
@@ -645,18 +745,27 @@
       }
 
       // Widget-specific fields
+      document.getElementById("f-heading").value = contact.heading || "";
       document.getElementById("f-welcome").value = contact.welcome || "";
       document.getElementById("f-wa-label").value = contact.waLabel || "";
       document.getElementById("f-wa-subtitle").value = contact.waSubtitle || "";
+      document.getElementById("f-wa-icon").value = contact.waIcon || "whatsapp";
       document.getElementById("f-message").value = contact.message || "";
 
-      // Booking
-      var hasBooking = contact.showBooking && contact.bookingUrl;
-      document.getElementById("f-demo-toggle").checked = !!hasBooking;
-      document.getElementById("demo-fields").classList.toggle("active", !!hasBooking);
+      // Second CTA
+      var hasCta2 = contact.showBooking && (contact.bookingUrl || contact.cta2Phone);
+      document.getElementById("f-demo-toggle").checked = !!hasCta2;
+      document.getElementById("demo-fields").classList.toggle("active", !!hasCta2);
+      var cta2Type = contact.cta2Type || "link";
+      document.getElementById("f-cta2-type").value = cta2Type;
+      document.getElementById("cta2-link-fields").style.display = cta2Type === "link" ? "" : "none";
+      document.getElementById("cta2-wa-fields").style.display = cta2Type === "whatsapp" ? "" : "none";
       document.getElementById("f-demo-url").value = contact.bookingUrl || "";
+      document.getElementById("f-cta2-phone").value = contact.cta2Phone || "";
+      document.getElementById("f-cta2-message").value = contact.cta2Message || "";
       document.getElementById("f-demo-label").value = contact.bookingLabel || "";
       document.getElementById("f-demo-subtitle").value = contact.bookingSubtitle || "";
+      document.getElementById("f-demo-icon").value = contact.demoIcon || "calendar";
 
       // Position
       position = contact.position === "left" ? "left" : "right";
@@ -730,14 +839,20 @@
       var settings = {
         phone: document.getElementById("f-phone").value.trim(),
         color: document.getElementById("f-color").value.trim(),
+        heading: document.getElementById("f-heading").value.trim(),
         welcome: document.getElementById("f-welcome").value.trim(),
         waLabel: document.getElementById("f-wa-label").value.trim(),
         waSubtitle: document.getElementById("f-wa-subtitle").value.trim(),
+        waIcon: document.getElementById("f-wa-icon").value,
         message: document.getElementById("f-message").value.trim(),
         showBooking: document.getElementById("f-demo-toggle").checked,
+        cta2Type: document.getElementById("f-cta2-type").value,
         bookingUrl: document.getElementById("f-demo-url").value.trim(),
+        cta2Phone: document.getElementById("f-cta2-phone").value.trim(),
+        cta2Message: document.getElementById("f-cta2-message").value.trim(),
         bookingLabel: document.getElementById("f-demo-label").value.trim(),
         bookingSubtitle: document.getElementById("f-demo-subtitle").value.trim(),
+        demoIcon: document.getElementById("f-demo-icon").value,
         position: position,
         embedCode: embedCode,
         installLink: installLink,
@@ -783,10 +898,42 @@
       generate();
     }
 
-    // Toggle demo fields
+    // Toggle CTA2 fields
     document.getElementById("f-demo-toggle").addEventListener("change", function () {
       document.getElementById("demo-fields").classList.toggle("active", this.checked);
       generate();
+    });
+
+    // CTA2 type toggle (WhatsApp vs Link)
+    document.getElementById("f-cta2-type").addEventListener("change", function () {
+      var isWa = this.value === "whatsapp";
+      document.getElementById("cta2-link-fields").style.display = isWa ? "none" : "";
+      document.getElementById("cta2-wa-fields").style.display = isWa ? "" : "none";
+      // Auto-set icon to match type
+      if (isWa) {
+        document.getElementById("f-demo-icon").value = "whatsapp";
+      } else {
+        document.getElementById("f-demo-icon").value = "calendar";
+      }
+      generate();
+    });
+
+    // Logo file upload
+    document.getElementById("f-logo-file").addEventListener("change", function () {
+      var file = this.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var dataUrl = e.target.result;
+        document.getElementById("f-logo").value = dataUrl;
+        document.getElementById("logo-preview-row").style.display = "flex";
+        document.getElementById("logo-preview-img").src = dataUrl;
+        document.getElementById("logo-sync-btn").textContent = "Upload to host first";
+        document.getElementById("logo-sync-btn").className = "logo-sync-btn";
+        document.getElementById("logo-sync-status").textContent = "Using local preview — sync or host the image for production";
+        generate();
+      };
+      reader.readAsDataURL(file);
     });
 
     // Sync color picker <-> text
@@ -802,9 +949,10 @@
       generate();
     });
 
-    // Listen to all inputs
-    document.querySelectorAll(".form-panel input").forEach(function (el) {
+    // Listen to all inputs and selects
+    document.querySelectorAll(".form-panel input, .form-panel select").forEach(function (el) {
       el.addEventListener("input", generate);
+      if (el.tagName === "SELECT") el.addEventListener("change", generate);
     });
 
     // ── Generate embed code ───────────────────────────────────
@@ -813,14 +961,20 @@
       var brand = document.getElementById("f-brand").value.trim();
       var logo = document.getElementById("f-logo").value.trim();
       var color = document.getElementById("f-color").value.trim();
+      var heading = document.getElementById("f-heading").value.trim();
       var welcome = document.getElementById("f-welcome").value.trim();
       var waLabel = document.getElementById("f-wa-label").value.trim();
       var waSubtitle = document.getElementById("f-wa-subtitle").value.trim();
+      var waIcon = document.getElementById("f-wa-icon").value;
       var message = document.getElementById("f-message").value.trim();
-      var showDemo = document.getElementById("f-demo-toggle").checked;
+      var showCta2 = document.getElementById("f-demo-toggle").checked;
+      var cta2Type = document.getElementById("f-cta2-type").value;
       var demoUrl = document.getElementById("f-demo-url").value.trim();
+      var cta2Phone = document.getElementById("f-cta2-phone").value.trim();
+      var cta2Message = document.getElementById("f-cta2-message").value.trim();
       var demoLabel = document.getElementById("f-demo-label").value.trim();
       var demoSubtitle = document.getElementById("f-demo-subtitle").value.trim();
+      var demoIcon = document.getElementById("f-demo-icon").value;
 
       var attrs = [];
       attrs.push(['src', WIDGET_URL]);
@@ -828,13 +982,27 @@
       if (brand) attrs.push(['data-brand', brand]);
       if (logo) attrs.push(['data-logo', logo]);
       if (color && color !== "#25D366") attrs.push(['data-color', color]);
+      if (heading && heading !== defaults.heading) attrs.push(['data-heading', heading]);
       if (welcome && welcome !== defaults.welcome) attrs.push(['data-welcome', welcome]);
+      if (waIcon && waIcon !== defaults.waIcon) attrs.push(['data-wa-icon', waIcon]);
       if (waLabel && waLabel !== defaults.waLabel) attrs.push(['data-wa-label', waLabel]);
       if (waSubtitle && waSubtitle !== defaults.waSubtitle) attrs.push(['data-wa-subtitle', waSubtitle]);
       if (message && message !== defaults.message) attrs.push(['data-message', message]);
-      if (showDemo && demoUrl) attrs.push(['data-demo-url', demoUrl]);
-      if (showDemo && demoLabel && demoLabel !== defaults.demoLabel) attrs.push(['data-demo-label', demoLabel]);
-      if (showDemo && demoSubtitle && demoSubtitle !== defaults.demoSubtitle) attrs.push(['data-demo-subtitle', demoSubtitle]);
+
+      // Second CTA
+      if (showCta2) {
+        if (cta2Type === "whatsapp") {
+          attrs.push(['data-cta2-type', 'whatsapp']);
+          if (cta2Phone) attrs.push(['data-cta2-phone', cta2Phone]);
+          if (cta2Message && cta2Message !== defaults.cta2Message) attrs.push(['data-cta2-message', cta2Message]);
+        } else {
+          if (demoUrl) attrs.push(['data-demo-url', demoUrl]);
+        }
+        if (demoLabel && demoLabel !== defaults.demoLabel) attrs.push(['data-demo-label', demoLabel]);
+        if (demoSubtitle && demoSubtitle !== defaults.demoSubtitle) attrs.push(['data-demo-subtitle', demoSubtitle]);
+        if (demoIcon && demoIcon !== defaults.demoIcon) attrs.push(['data-demo-icon', demoIcon]);
+      }
+
       if (position === "left") attrs.push(['data-position', 'left']);
 
       // Plain text
@@ -858,13 +1026,24 @@
       if (brand) installParams.set("brand", brand);
       if (logo) installParams.set("logo", logo);
       if (color && color !== "#25D366") installParams.set("color", color);
+      if (heading && heading !== defaults.heading) installParams.set("heading", heading);
       if (welcome && welcome !== defaults.welcome) installParams.set("welcome", welcome);
+      if (waIcon && waIcon !== defaults.waIcon) installParams.set("wa-icon", waIcon);
       if (waLabel && waLabel !== defaults.waLabel) installParams.set("wa-label", waLabel);
       if (waSubtitle && waSubtitle !== defaults.waSubtitle) installParams.set("wa-subtitle", waSubtitle);
       if (message && message !== defaults.message) installParams.set("message", message);
-      if (showDemo && demoUrl) installParams.set("demo-url", demoUrl);
-      if (showDemo && demoLabel && demoLabel !== defaults.demoLabel) installParams.set("demo-label", demoLabel);
-      if (showDemo && demoSubtitle && demoSubtitle !== defaults.demoSubtitle) installParams.set("demo-subtitle", demoSubtitle);
+      if (showCta2) {
+        if (cta2Type === "whatsapp") {
+          installParams.set("cta2-type", "whatsapp");
+          if (cta2Phone) installParams.set("cta2-phone", cta2Phone);
+          if (cta2Message && cta2Message !== defaults.cta2Message) installParams.set("cta2-message", cta2Message);
+        } else {
+          if (demoUrl) installParams.set("demo-url", demoUrl);
+        }
+        if (demoLabel && demoLabel !== defaults.demoLabel) installParams.set("demo-label", demoLabel);
+        if (demoSubtitle && demoSubtitle !== defaults.demoSubtitle) installParams.set("demo-subtitle", demoSubtitle);
+        if (demoIcon && demoIcon !== defaults.demoIcon) installParams.set("demo-icon", demoIcon);
+      }
       if (position === "left") installParams.set("position", "left");
 
       var installUrl = "https://widget.reachmax.app/install?" + installParams.toString();
